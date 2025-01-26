@@ -2,7 +2,7 @@ import CheckIcon from "../assets/icons/check.svg?react";
 import LoaderIcon from "../assets/icons/loader.svg?react";
 import DetailsIcon from "../assets/icons/details.svg?react";
 
-const TaskItem = ({ task }) => {
+const TaskItem = ({ task, handleTaskCheckboxClick }) => {
   const getStatusClasses = () => {
     if (task.status === "done") {
       return "bg-[#00ADB5] text-[#00ADB5]";
@@ -14,18 +14,23 @@ const TaskItem = ({ task }) => {
       return "bg-[#35383E] bg-opacity-10 text-[#35383E]";
     }
   };
+
   return (
     <div
-      className={`flex items-center rounded-lg px-4 py-3 text-sm ${getStatusClasses()} justify-between bg-opacity-10`}
+      className={`flex items-center rounded-lg px-4 py-3 text-sm ${getStatusClasses()} select-none justify-between bg-opacity-10 transition`}
     >
-      <div className="flex items-center gap-2">
+      <div
+        className="flex cursor-pointer items-center gap-2"
+        onClick={() => handleTaskCheckboxClick(task.id)}
+      >
         <label
-          className={`relative flex size-7 cursor-pointer items-center justify-center rounded-lg ${getStatusClasses()}`}
+          className={`relative flex size-7 items-center justify-center rounded-lg ${getStatusClasses()}`}
         >
           <input
             type="checkbox"
             className="absolute h-full w-full cursor-pointer opacity-0"
             checked={task.status === "done"}
+            onChange={() => {}}
           />
           {task.status === "done" && <CheckIcon />}
           {task.status === "inProgress" && (

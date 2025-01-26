@@ -11,9 +11,31 @@ import TaskItem from "./TaskItem";
 
 const Tasks = () => {
   const [tasks, setTasks] = useState(TASKS);
+
   const morningTasks = tasks.filter((task) => task.time == "morning");
   const afternoonTasks = tasks.filter((task) => task.time === "afternoon");
   const nightTasks = tasks.filter((task) => task.time === "night");
+
+  const handleTaskCheckboxClick = (taskId) => {
+    const newTasks = tasks.map((task) => {
+      if (task.id !== taskId) {
+        return task;
+      }
+
+      if (task.status === "notStarted") {
+        return { ...task, status: "inProgress" };
+      }
+      if (task.status === "done") {
+        return { ...task, status: "notStarted" };
+      }
+      if (task.status === "inProgress") {
+        return { ...task, status: "done" };
+      }
+
+      return task;
+    });
+    setTasks(newTasks);
+  };
 
   return (
     <div className="w-full px-8 py-16">
@@ -41,21 +63,33 @@ const Tasks = () => {
         <div className="space-y-3">
           <TasksSeparator text="Manhã" icon={<SunIcon />} />
           {morningTasks.map((task) => (
-            <TaskItem task={task} key={task.id} />
+            <TaskItem
+              task={task}
+              key={task.id}
+              handleTaskCheckboxClick={handleTaskCheckboxClick}
+            />
           ))}
         </div>
 
         <div className="my-6 space-y-3">
           <TasksSeparator text="Tarde" icon={<CloudSunIcon />} />
           {afternoonTasks.map((task) => (
-            <TaskItem task={task} key={task.id} />
+            <TaskItem
+              task={task}
+              key={task.id}
+              handleTaskCheckboxClick={handleTaskCheckboxClick}
+            />
           ))}
         </div>
 
         <div className="space-y-3">
           <TasksSeparator text="Noite" icon={<MoonIcon />} />
           {nightTasks.map((task) => (
-            <TaskItem task={task} key={task.id} />
+            <TaskItem
+              task={task}
+              key={task.id}
+              handleTaskCheckboxClick={handleTaskCheckboxClick}
+            />
           ))}
         </div>
       </div>
