@@ -8,6 +8,7 @@ import TasksSeparator from "./TasksSeparator";
 import { useState } from "react";
 import TASKS from "../constants/tasks";
 import TaskItem from "./TaskItem";
+import { toast } from "sonner";
 
 const Tasks = () => {
   const [tasks, setTasks] = useState(TASKS);
@@ -40,6 +41,12 @@ const Tasks = () => {
   const handleTaskDeleteClick = (taskId) => {
     const newTasks = tasks.filter((task) => task.id !== taskId);
     setTasks(newTasks);
+    toast.success("Tarefa deletada com sucesso!");
+  };
+
+  const handleDeleteAllTasksClick = () => {
+    setTasks([]);
+    toast.success("Todas as tarefas foram deletadas com sucesso!");
   };
 
   return (
@@ -53,7 +60,7 @@ const Tasks = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <Button variant={"ghost"}>
+          <Button variant={"ghost"} onClick={handleDeleteAllTasksClick}>
             Limpar tarefas
             <TrashIcon />
           </Button>
