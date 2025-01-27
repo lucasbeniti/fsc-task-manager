@@ -9,7 +9,7 @@ const TimeSelect = forwardRef((props, ref) => {
       <select
         ref={ref}
         id="time"
-        className="rounded-lg border border-solid border-[#ECECEC] px-4 py-3 outline-[#00ADB5]"
+        className="rounded-lg border border-solid border-[#ECECEC] px-4 py-3 outline-brand-primary"
         {...props}
       >
         <option value="morning">Manhã</option>
