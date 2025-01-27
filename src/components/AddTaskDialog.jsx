@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import "./AddTaskDialog.css";
 import TimeSelect from "./TimeSelect";
 import { v4 } from "uuid";
+import PropTypes from "prop-types";
 
 const AddTaskDialog = ({
   isOpen,
@@ -136,6 +137,12 @@ const AddTaskDialog = ({
       </div>
     </CSSTransition>
   );
+};
+
+AddTaskDialog.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  handleCloseDialogClick: PropTypes.func.isRequired,
+  handleAddTaskSubmit: PropTypes.func.isRequired,
 };
 
 export default AddTaskDialog;

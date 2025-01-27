@@ -12,6 +12,7 @@ import TASKS from "../constants/tasks";
 import TaskItem from "./TaskItem";
 import { toast } from "sonner";
 import AddTaskDialog from "./AddTaskDialog";
+import PropTypes from "prop-types";
 
 const Tasks = () => {
   const [tasks, setTasks] = useState(TASKS);
@@ -134,6 +135,10 @@ const Tasks = () => {
       </div>
     </div>
   );
+};
+
+Tasks.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default Tasks;
