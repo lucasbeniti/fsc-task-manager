@@ -11,9 +11,11 @@ import { useState } from "react";
 import TASKS from "../constants/tasks";
 import TaskItem from "./TaskItem";
 import { toast } from "sonner";
+import AddTaskDialog from "./AddTaskDialog";
 
 const Tasks = () => {
   const [tasks, setTasks] = useState(TASKS);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const morningTasks = tasks.filter((task) => task.time == "morning");
   const afternoonTasks = tasks.filter((task) => task.time === "afternoon");
@@ -51,6 +53,14 @@ const Tasks = () => {
     toast.success("Todas as tarefas foram deletadas com sucesso!");
   };
 
+  const handleAddTaskClick = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialogClick = () => {
+    setIsDialogOpen(false);
+  };
+
   return (
     <div className="w-full space-y-6 px-8 py-16">
       <div className="flex w-full justify-between">
@@ -66,10 +76,15 @@ const Tasks = () => {
             Limpar tarefas
             <TrashIcon />
           </Button>
-          <Button variant={"primary"}>
+          <Button variant={"primary"} onClick={handleAddTaskClick}>
             Nova tarefa
             <AddIcon />
           </Button>
+
+          <AddTaskDialog
+            isOpen={isDialogOpen}
+            handleCloseDialogClick={handleCloseDialogClick}
+          />
         </div>
       </div>
 
