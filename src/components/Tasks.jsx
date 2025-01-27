@@ -7,20 +7,32 @@ import {
   MoonIcon,
 } from "../assets/icons";
 import TasksSeparator from "./TasksSeparator";
-import { useState } from "react";
-import TASKS from "../constants/tasks";
+import { useEffect, useState } from "react";
 import TaskItem from "./TaskItem";
 import { toast } from "sonner";
 import AddTaskDialog from "./AddTaskDialog";
 import PropTypes from "prop-types";
 
 const Tasks = () => {
-  const [tasks, setTasks] = useState(TASKS);
+  const [tasks, setTasks] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const morningTasks = tasks.filter((task) => task.time == "morning");
   const afternoonTasks = tasks.filter((task) => task.time === "afternoon");
   const nightTasks = tasks.filter((task) => task.time === "night");
+
+  useEffect(() => {
+    async function fetchTasks() {
+      const response = await fetch("http://localhost:3000/tasks", {
+        method: "GET",
+      });
+      const tasks = await response.json();
+
+      setTasks(tasks);
+    }
+
+    fetchTasks();
+  }, []);
 
   const handleTaskCheckboxClick = (taskId) => {
     const newTasks = tasks.map((task) => {
