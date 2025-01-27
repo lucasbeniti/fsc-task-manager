@@ -16,6 +16,7 @@ const AddTaskDialog = ({
   const [title, setTitle] = useState();
   const [time, setTime] = useState("morning");
   const [description, setDescription] = useState();
+  const [errors, setErrors] = useState([]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -26,9 +27,33 @@ const AddTaskDialog = ({
   }, [isOpen]);
 
   const handleSaveClick = () => {
-    if (!title.trim() || !description.trim()) {
-      return alert("Preencha todos os campos!");
+    const newErrors = [];
+    if (!title.trim()) {
+      newErrors.push({
+        inputName: "title",
+        message: "O título é obrigatório!",
+      });
     }
+
+    if (!time.trim()) {
+      newErrors.push({
+        inputName: "time",
+        message: "O horário é obrigatório!",
+      });
+    }
+
+    if (!description.trim()) {
+      newErrors.push({
+        inputName: "description",
+        message: "A descrição é obrigatória!",
+      });
+    }
+
+    if (newErrors.length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     handleAddTaskSubmit({
       id: v4(),
       title,
@@ -37,6 +62,12 @@ const AddTaskDialog = ({
       status: "notStarted",
     });
   };
+
+  const titleError = errors.find((error) => error.inputName === "title");
+  const timeError = errors.find((error) => error.inputName === "time");
+  const descriptionError = errors.find(
+    (error) => error.inputName === "description"
+  );
 
   return (
     <CSSTransition
@@ -67,11 +98,13 @@ const AddTaskDialog = ({
                   id="title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                  error={titleError}
                 />
 
                 <TimeSelect
                   value={time}
                   onChange={(e) => setTime(e.target.value)}
+                  error={timeError}
                 />
 
                 <Input
@@ -80,6 +113,7 @@ const AddTaskDialog = ({
                   id="description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+                  error={descriptionError}
                 />
 
                 <div className="flex items-center gap-3">
