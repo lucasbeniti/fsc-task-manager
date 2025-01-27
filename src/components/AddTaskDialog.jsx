@@ -5,6 +5,7 @@ import { CSSTransition } from "react-transition-group";
 import { useRef } from "react";
 import "./AddTaskDialog.css";
 import InputLabel from "./InputLabel";
+import TimeSelect from "./TimeSelect";
 
 const AddTaskDialog = ({ isOpen, handleCloseDialogClick }) => {
   const nodeRef = useRef();
@@ -38,18 +39,7 @@ const AddTaskDialog = ({ isOpen, handleCloseDialogClick }) => {
                   id="title"
                 />
 
-                <div className="flex flex-col gap-1 text-left">
-                  <InputLabel htmlFor="time">Horário</InputLabel>
-                  <select
-                    id="time"
-                    className="placehoder:text-[#9A9C9F] rounded-lg border border-solid border-[#ECECEC] px-4 py-3 outline-[#00ADB5] placeholder:text-sm"
-                  >
-                    <option value="0">Selecione</option>
-                    <option value="morning">Manhã</option>
-                    <option value="afternoon">Tarde</option>
-                    <option value="night">Noite</option>
-                  </select>
-                </div>
+                <TimeSelect />
 
                 <Input
                   label="Descrição"
