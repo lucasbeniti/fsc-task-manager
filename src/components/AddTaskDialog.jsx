@@ -13,21 +13,26 @@ const AddTaskDialog = ({
   handleAddTaskSubmit,
 }) => {
   const nodeRef = useRef();
-  const [title, setTitle] = useState();
-  const [time, setTime] = useState("morning");
-  const [description, setDescription] = useState();
+  const titleRef = useRef();
+  const timeRef = useRef();
+  const descriptionRef = useRef();
+
   const [errors, setErrors] = useState([]);
 
   useEffect(() => {
     if (!isOpen) {
-      setTitle("");
-      setTime("morning");
-      setDescription("");
+      // titleRef?.current?.value = "";
+      // timeRef?.current?.value = "";
+      // descriptionRef?.current?.value = "";
     }
   }, [isOpen]);
 
   const handleSaveClick = () => {
+    const title = titleRef.current.value;
+    const description = descriptionRef.current.value;
+    const time = timeRef.current.value;
     const newErrors = [];
+
     if (!title.trim()) {
       newErrors.push({
         inputName: "title",
@@ -78,7 +83,7 @@ const AddTaskDialog = ({
       classNames={"add-task-dialog"}
       unmountOnExit
     >
-      <div>
+      <div className="hidden">
         {createPortal(
           <div
             ref={nodeRef}
@@ -97,24 +102,18 @@ const AddTaskDialog = ({
                   label="Título"
                   placeholder="Título da tarefa"
                   id="title"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
                   error={titleError}
+                  ref={titleRef}
                 />
 
-                <TimeSelect
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                  error={timeError}
-                />
+                <TimeSelect error={timeError} ref={timeRef} />
 
                 <Input
                   label="Descrição"
                   placeholder="Descreva a tarefa"
                   id="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
                   error={descriptionError}
+                  ref={descriptionRef}
                 />
 
                 <div className="flex items-center gap-3">
