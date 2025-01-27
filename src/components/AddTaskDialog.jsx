@@ -2,13 +2,30 @@ import { createPortal } from "react-dom";
 import Input from "./Input";
 import Button from "./Button";
 import { CSSTransition } from "react-transition-group";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import "./AddTaskDialog.css";
-import InputLabel from "./InputLabel";
 import TimeSelect from "./TimeSelect";
+import { v4 } from "uuid";
 
-const AddTaskDialog = ({ isOpen, handleCloseDialogClick }) => {
+const AddTaskDialog = ({
+  isOpen,
+  handleCloseDialogClick,
+  handleAddTaskSubmit,
+}) => {
   const nodeRef = useRef();
+  const [time, setTime] = useState("morning");
+  const [title, setTitle] = useState();
+  const [description, setDescription] = useState();
+
+  const handleSaveClick = () => {
+    handleAddTaskSubmit({
+      id: v4(),
+      title,
+      time,
+      description,
+      status: "notStarted",
+    });
+  };
 
   return (
     <CSSTransition
@@ -37,14 +54,21 @@ const AddTaskDialog = ({ isOpen, handleCloseDialogClick }) => {
                   label="Título"
                   placeholder="Título da tarefa"
                   id="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
                 />
 
-                <TimeSelect />
+                <TimeSelect
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                />
 
                 <Input
                   label="Descrição"
                   placeholder="Descreva a tarefa"
                   id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                 />
 
                 <div className="flex items-center gap-3">
@@ -55,7 +79,9 @@ const AddTaskDialog = ({ isOpen, handleCloseDialogClick }) => {
                   >
                     Cancelar
                   </Button>
-                  <Button size="lg">Salvar</Button>
+                  <Button size="lg" onClick={handleSaveClick}>
+                    Salvar
+                  </Button>
                 </div>
               </div>
             </div>
