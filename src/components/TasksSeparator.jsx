@@ -10,7 +10,7 @@ const TasksSeparator = ({ text, icon }) => {
 };
 
 TasksSeparator.propTypes = {
-  title: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
   icon: PropTypes.element.isRequired,
 };
 

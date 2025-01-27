@@ -55,13 +55,29 @@ const Tasks = () => {
     setTasks(newTasks);
   };
 
-  const handleTaskDeleteClick = (taskId) => {
+  const handleTaskDeleteClick = async (taskId) => {
     const newTasks = tasks.filter((task) => task.id !== taskId);
+    const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      toast.error("Erro ao deletar tarefa. Por favor, tente novamente!");
+      return;
+    }
     setTasks(newTasks);
     toast.success("Tarefa deletada com sucesso!");
   };
 
-  const handleDeleteAllTasksClick = () => {
+  const handleDeleteAllTasksClick = async () => {
+    const response = await fetch("http://localhost:3000/tasks", {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      toast.error(
+        "Erro ao deletar todas as tarefas. Por favor, tente novamente!"
+      );
+      return;
+    }
     setTasks([]);
     toast.success("Todas as tarefas foram deletadas com sucesso!");
   };
@@ -157,10 +173,6 @@ const Tasks = () => {
       </div>
     </div>
   );
-};
-
-Tasks.propTypes = {
-  children: PropTypes.node.isRequired,
 };
 
 export default Tasks;
