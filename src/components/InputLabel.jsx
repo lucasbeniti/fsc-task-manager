@@ -9,7 +9,7 @@ const InputLabel = (props) => {
 };
 
 InputLabel.propTypes = {
-  props: PropTypes.node.isRequired,
+  props: PropTypes.any,
 };
 
 export default InputLabel;

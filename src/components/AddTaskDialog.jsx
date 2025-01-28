@@ -2,39 +2,31 @@ import { createPortal } from "react-dom";
 import Input from "./Input";
 import Button from "./Button";
 import { CSSTransition } from "react-transition-group";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import "./AddTaskDialog.css";
 import TimeSelect from "./TimeSelect";
 import { v4 } from "uuid";
 import PropTypes from "prop-types";
+import { LoaderIcon } from "../assets/icons";
 
-const AddTaskDialog = ({
-  isOpen,
-  handleCloseDialogClick,
-  handleAddTaskSubmit,
-}) => {
+const AddTaskDialog = ({ isOpen, handleCloseDialogClick, onSubmitSuccess }) => {
   const nodeRef = useRef();
   const titleRef = useRef();
   const timeRef = useRef();
   const descriptionRef = useRef();
 
   const [errors, setErrors] = useState([]);
+  const [isDialogLoading, setIsDialogLoading] = useState(false);
 
-  useEffect(() => {
-    if (!isOpen) {
-      // titleRef?.current?.value = "";
-      // timeRef?.current?.value = "";
-      // descriptionRef?.current?.value = "";
-    }
-  }, [isOpen]);
-
-  const handleSaveClick = () => {
+  const handleSaveClick = async () => {
+    setIsDialogLoading(true);
     const title = titleRef.current.value;
     const description = descriptionRef.current.value;
     const time = timeRef.current.value;
     const newErrors = [];
 
     if (!title.trim()) {
+      setIsDialogLoading(false);
       newErrors.push({
         inputName: "title",
         message: "O título é obrigatório!",
@@ -42,6 +34,7 @@ const AddTaskDialog = ({
     }
 
     if (!time.trim()) {
+      setIsDialogLoading(false);
       newErrors.push({
         inputName: "time",
         message: "O horário é obrigatório!",
@@ -49,6 +42,7 @@ const AddTaskDialog = ({
     }
 
     if (!description.trim()) {
+      setIsDialogLoading(false);
       newErrors.push({
         inputName: "description",
         message: "A descrição é obrigatória!",
@@ -61,13 +55,19 @@ const AddTaskDialog = ({
       return;
     }
 
-    handleAddTaskSubmit({
-      id: v4(),
-      title,
-      time,
-      description,
-      status: "notStarted",
+    const task = { id: v4(), title, time, description, status: "notStarted" };
+    const response = await fetch("http://localhost:3000/tasks", {
+      method: "POST",
+      body: JSON.stringify(task),
     });
+
+    if (!response.ok) {
+      setIsDialogLoading(false);
+      toast.error("Erro ao adicionar tarefa. Por favor, tente novamente!");
+      return;
+    }
+    setIsDialogLoading(false);
+    onSubmitSuccess(task);
   };
 
   const titleError = errors.find((error) => error.inputName === "title");
@@ -122,11 +122,17 @@ const AddTaskDialog = ({
                     variant="secondary"
                     size="lg"
                     onClick={handleCloseDialogClick}
+                    disabled={isDialogLoading}
                   >
                     Cancelar
                   </Button>
-                  <Button size="lg" onClick={handleSaveClick}>
+                  <Button
+                    size="lg"
+                    onClick={handleSaveClick}
+                    disabled={isDialogLoading}
+                  >
                     Salvar
+                    {isDialogLoading && <LoaderIcon className="animate-spin" />}
                   </Button>
                 </div>
               </div>
@@ -142,7 +148,7 @@ const AddTaskDialog = ({
 AddTaskDialog.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   handleCloseDialogClick: PropTypes.func.isRequired,
-  handleAddTaskSubmit: PropTypes.func.isRequired,
+  onSubmitSuccess: PropTypes.func.isRequired,
 };
 
 export default AddTaskDialog;

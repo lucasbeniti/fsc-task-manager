@@ -34,13 +34,6 @@
       "description": "Senhor dos Anéis",
       "time": "night",
       "status": "done"
-    },
-    {
-      "id": "55409aa6-f070-46b8-9ca7-c311c6b02b93",
-      "title": "123",
-      "time": "morning",
-      "description": "123",
-      "status": "notStarted"
     }
   ]
 }
