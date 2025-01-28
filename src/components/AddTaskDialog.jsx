@@ -105,9 +105,14 @@ const AddTaskDialog = ({ isOpen, handleCloseDialogClick, onSubmitSuccess }) => {
                   id="title"
                   error={titleError}
                   ref={titleRef}
+                  disabled={isDialogLoading}
                 />
 
-                <TimeSelect error={timeError} ref={timeRef} />
+                <TimeSelect
+                  error={timeError}
+                  ref={timeRef}
+                  disabled={isDialogLoading}
+                />
 
                 <Input
                   label="Descrição"
@@ -115,6 +120,7 @@ const AddTaskDialog = ({ isOpen, handleCloseDialogClick, onSubmitSuccess }) => {
                   id="description"
                   error={descriptionError}
                   ref={descriptionRef}
+                  disabled={isDialogLoading}
                 />
 
                 <div className="flex items-center gap-3">
