@@ -1,6 +1,5 @@
 import SidebarButton from "./SidebarButton";
 import { HomeIcon, TasksIcon } from "../assets/icons";
-import PropTypes from "prop-types";
 
 const Sidebar = () => {
   return (
