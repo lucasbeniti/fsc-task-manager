@@ -11,7 +11,6 @@ import { useEffect, useState } from "react";
 import TaskItem from "./TaskItem";
 import { toast } from "sonner";
 import AddTaskDialog from "./AddTaskDialog";
-import PropTypes from "prop-types";
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([]);
@@ -39,7 +38,6 @@ const Tasks = () => {
       if (task.id !== taskId) {
         return task;
       }
-
       if (task.status === "notStarted") {
         return { ...task, status: "inProgress" };
       }
@@ -55,15 +53,8 @@ const Tasks = () => {
     setTasks(newTasks);
   };
 
-  const handleTaskDeleteClick = async (taskId) => {
+  const onDeleteSuccess = (taskId) => {
     const newTasks = tasks.filter((task) => task.id !== taskId);
-    const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
-      method: "DELETE",
-    });
-    if (!response.ok) {
-      toast.error("Erro ao deletar tarefa. Por favor, tente novamente!");
-      return;
-    }
     setTasks(newTasks);
     toast.success("Tarefa deletada com sucesso!");
   };
@@ -142,7 +133,7 @@ const Tasks = () => {
               task={task}
               key={task.id}
               handleTaskCheckboxClick={handleTaskCheckboxClick}
-              handleTaskDeleteClick={handleTaskDeleteClick}
+              onDeleteSuccess={onDeleteSuccess}
             />
           ))}
         </div>
@@ -154,7 +145,7 @@ const Tasks = () => {
               task={task}
               key={task.id}
               handleTaskCheckboxClick={handleTaskCheckboxClick}
-              handleTaskDeleteClick={handleTaskDeleteClick}
+              onDeleteSuccess={onDeleteSuccess}
             />
           ))}
         </div>
@@ -166,7 +157,7 @@ const Tasks = () => {
               task={task}
               key={task.id}
               handleTaskCheckboxClick={handleTaskCheckboxClick}
-              handleTaskDeleteClick={handleTaskDeleteClick}
+              onDeleteSuccess={onDeleteSuccess}
             />
           ))}
         </div>
