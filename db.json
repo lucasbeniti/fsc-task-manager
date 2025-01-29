@@ -1,20 +1,6 @@
 {
   "tasks": [
     {
-      "id": "1",
-      "title": "Estudar React2",
-      "description": "Aprender sobre 23232",
-      "time": "afternoon",
-      "status": "done"
-    },
-    {
-      "id": "2",
-      "title": "Ler livro",
-      "description": "Senhor dos Anéis",
-      "time": "morning",
-      "status": "inProgress"
-    },
-    {
       "id": "3",
       "title": "Ler livro",
       "description": "Senhor dos Anéis",
@@ -29,50 +15,10 @@
       "status": "inProgress"
     },
     {
-      "id": "0ba5c57d-9d62-4f38-b478-7766b3f82714",
-      "title": "teste",
+      "id": "8dae168a-adf2-4067-a8b9-93c0eb7aefd8",
+      "title": "a",
       "time": "morning",
-      "description": "123",
-      "status": "notStarted"
-    },
-    {
-      "id": "028b76e9-22a4-49c6-9793-ba76b554bdf4",
-      "title": "232323232",
-      "time": "morning",
-      "description": "123433232",
-      "status": "notStarted",
-      "data": {
-        "title": "333",
-        "time": "morning",
-        "description": "1234343"
-      }
-    },
-    {
-      "id": "a16c7f31-b3be-4dde-9e58-2149501a8358",
-      "title": "Teste",
-      "time": "morning",
-      "description": "123",
-      "status": "notStarted"
-    },
-    {
-      "id": "28f8fd30-77e1-414b-8a5f-7e9da90f65d3",
-      "title": "Teste",
-      "time": "morning",
-      "description": "1232",
-      "status": "notStarted"
-    },
-    {
-      "id": "d3ed7a08-36dc-4522-86fa-24c8fe06b607",
-      "title": "123",
-      "time": "morning",
-      "description": "123",
-      "status": "notStarted"
-    },
-    {
-      "id": "d13c5b10-55f9-4c1e-a344-47cf02e2e726",
-      "title": "123",
-      "time": "morning",
-      "description": "232",
+      "description": "a",
       "status": "notStarted"
     }
   ]
