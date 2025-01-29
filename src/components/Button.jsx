@@ -48,7 +48,7 @@ const Button = ({
 
 Button.propTypes = {
   children: PropTypes.node.isRequired,
-  variant: PropTypes.oneOf(["primary", "ghost", "secondary"]),
+  variant: PropTypes.oneOf(["primary", "ghost", "secondary", "danger"]),
   size: PropTypes.oneOf(["sm", "lg"]),
 };
 

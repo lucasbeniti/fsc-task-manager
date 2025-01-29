@@ -26,7 +26,6 @@ const AddTaskDialog = ({ isOpen, handleCloseDialogClick, onSubmitSuccess }) => {
     const newErrors = [];
 
     if (!title.trim()) {
-      setIsDialogLoading(false);
       newErrors.push({
         inputName: "title",
         message: "O título é obrigatório!",
@@ -34,7 +33,6 @@ const AddTaskDialog = ({ isOpen, handleCloseDialogClick, onSubmitSuccess }) => {
     }
 
     if (!time.trim()) {
-      setIsDialogLoading(false);
       newErrors.push({
         inputName: "time",
         message: "O horário é obrigatório!",
@@ -42,7 +40,6 @@ const AddTaskDialog = ({ isOpen, handleCloseDialogClick, onSubmitSuccess }) => {
     }
 
     if (!description.trim()) {
-      setIsDialogLoading(false);
       newErrors.push({
         inputName: "description",
         message: "A descrição é obrigatória!",
