@@ -29,13 +29,6 @@
       "status": "inProgress"
     },
     {
-      "id": "5",
-      "title": "Ler livro",
-      "description": "Senhor dos Anéis",
-      "time": "night",
-      "status": "done"
-    },
-    {
       "id": "0ba5c57d-9d62-4f38-b478-7766b3f82714",
       "title": "teste",
       "time": "morning",
@@ -46,13 +39,6 @@
       "id": "028b76e9-22a4-49c6-9793-ba76b554bdf4",
       "title": "123",
       "time": "morning",
-      "description": "123",
-      "status": "notStarted"
-    },
-    {
-      "id": "73a6d4ac-62c2-4800-942f-2cb9342d5747",
-      "title": "123",
-      "time": "night",
       "description": "123",
       "status": "notStarted"
     }
