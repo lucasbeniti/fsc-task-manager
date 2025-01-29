@@ -9,9 +9,22 @@ import { v4 } from "uuid";
 import PropTypes from "prop-types";
 import { LoaderIcon } from "../assets/icons";
 import { useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
-const AddTaskDialog = ({ isOpen, handleCloseDialogClick, onSubmitSuccess }) => {
+const AddTaskDialog = ({ isOpen, handleClose }) => {
   const nodeRef = useRef();
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation({
+    mutationKey: ["add-task"],
+    mutationFn: async (task) => {
+      const response = await fetch("http://localhost:3000/tasks", {
+        method: "POST",
+        body: JSON.stringify(task),
+      });
+      return response.json();
+    },
+  });
   const {
     register,
     handleSubmit,
@@ -33,17 +46,21 @@ const AddTaskDialog = ({ isOpen, handleCloseDialogClick, onSubmitSuccess }) => {
       description: data.description.trim(),
       status: "notStarted",
     };
-    const response = await fetch("http://localhost:3000/tasks", {
-      method: "POST",
-      body: JSON.stringify(task),
-    });
 
-    if (!response.ok) {
-      toast.error("Erro ao adicionar tarefa. Por favor, tente novamente!");
-      return;
-    }
-    onSubmitSuccess(task);
-    reset();
+    mutate(task, {
+      onSuccess: () => {
+        queryClient.setQueryData(["tasks"], (currentTasks) => {
+          return [...currentTasks, task];
+        });
+        handleClose();
+        toast.success("Tarefa adicionada com sucesso!");
+        reset();
+      },
+      onError: () => {
+        toast.error("Erro ao adicionar tarefa. Por favor, tente novamente!");
+        return;
+      },
+    });
   };
 
   return (
@@ -124,7 +141,7 @@ const AddTaskDialog = ({ isOpen, handleCloseDialogClick, onSubmitSuccess }) => {
                   <Button
                     variant="secondary"
                     size="lg"
-                    onClick={handleCloseDialogClick}
+                    onClick={handleClose}
                     disabled={isSubmitting}
                     type="button"
                   >
@@ -147,8 +164,7 @@ const AddTaskDialog = ({ isOpen, handleCloseDialogClick, onSubmitSuccess }) => {
 
 AddTaskDialog.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  handleCloseDialogClick: PropTypes.func.isRequired,
-  onSubmitSuccess: PropTypes.func.isRequired,
+  handleClose: PropTypes.func.isRequired,
 };
 
 export default AddTaskDialog;

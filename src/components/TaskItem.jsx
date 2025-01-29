@@ -2,24 +2,33 @@ import PropTypes from "prop-types";
 import { CheckIcon, LoaderIcon, DetailsIcon, TrashIcon } from "../assets/icons";
 import Button from "./Button";
 import { toast } from "sonner";
-import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const TaskItem = ({ task, handleTaskCheckboxClick, onDeleteSuccess }) => {
-  const [deleteTaskIsLoading, setDeleteTaskIsLoading] = useState(false);
+const TaskItem = ({ task, handleTaskCheckboxClick }) => {
+  const queryClient = useQueryClient();
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["deleteTask", task.id],
+    mutationFn: async () => {
+      const response = await fetch(`http://localhost:3000/tasks/${task.id}`, {
+        method: "DELETE",
+      });
+      return response.json();
+    },
+  });
 
   const handleDeleteClick = async () => {
-    setDeleteTaskIsLoading(true);
-    const response = await fetch(`http://localhost:3000/tasks/${task.id}`, {
-      method: "DELETE",
+    mutate(undefined, {
+      onSuccess: () => {
+        queryClient.setQueryData(["tasks"], (currentTasks) => {
+          return currentTasks.filter((t) => t.id !== task.id);
+        });
+        toast.success("Tarefa deletada com sucesso!");
+      },
+      onError: () => {
+        toast.error("Erro ao deletar tarefa. Por favor, tente novamente!");
+      },
     });
-    if (!response.ok) {
-      setDeleteTaskIsLoading(false);
-      toast.error("Erro ao deletar tarefa. Por favor, tente novamente!");
-      return;
-    }
-    onDeleteSuccess(task.id);
-    setDeleteTaskIsLoading(false);
   };
 
   const getStatusClasses = () => {
@@ -61,9 +70,9 @@ const TaskItem = ({ task, handleTaskCheckboxClick, onDeleteSuccess }) => {
           variant="ghost"
           className="transition-all hover:opacity-75"
           onClick={handleDeleteClick}
-          disabled={deleteTaskIsLoading}
+          disabled={isPending}
         >
-          {deleteTaskIsLoading ? (
+          {isPending ? (
             <LoaderIcon className="animate-spin" />
           ) : (
             <TrashIcon className="text-red-500" />
@@ -87,7 +96,6 @@ TaskItem.propTypes = {
     status: PropTypes.oneOf(["done", "inProgress", "notStarted"]).isRequired,
   }).isRequired,
   handleTaskCheckboxClick: PropTypes.func.isRequired,
-  onDeleteSuccess: PropTypes.func.isRequired,
 };
 
 export default TaskItem;

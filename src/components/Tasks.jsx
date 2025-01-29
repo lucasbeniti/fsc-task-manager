@@ -52,13 +52,6 @@ const Tasks = () => {
     queryClient.setQueryData(["tasks"], newTasks);
   };
 
-  const onDeleteSuccess = async (taskId) => {
-    queryClient.setQueryData(["tasks"], (currentTasks) => {
-      return currentTasks.filter((task) => task.id !== taskId);
-    });
-    toast.success("Tarefa deletada com sucesso!");
-  };
-
   const handleDeleteAllTasksClick = async () => {
     const response = await fetch("http://localhost:3000/tasks", {
       method: "DELETE",
@@ -76,16 +69,8 @@ const Tasks = () => {
     setIsDialogOpen(true);
   };
 
-  const handleCloseDialogClick = () => {
+  const handleClose = () => {
     setIsDialogOpen(false);
-  };
-
-  const onSubmitSuccess = async (task) => {
-    queryClient.setQueryData(["tasks"], (currentTasks) => {
-      return [...currentTasks, task];
-    });
-    setIsDialogOpen(false);
-    toast.success("Tarefa adicionada com sucesso!");
   };
 
   return (
@@ -108,11 +93,7 @@ const Tasks = () => {
             <AddIcon />
           </Button>
 
-          <AddTaskDialog
-            isOpen={isDialogOpen}
-            handleCloseDialogClick={handleCloseDialogClick}
-            onSubmitSuccess={onSubmitSuccess}
-          />
+          <AddTaskDialog isOpen={isDialogOpen} handleClose={handleClose} />
         </div>
       </div>
 
@@ -129,7 +110,6 @@ const Tasks = () => {
               task={task}
               key={task.id}
               handleTaskCheckboxClick={handleTaskCheckboxClick}
-              onDeleteSuccess={onDeleteSuccess}
             />
           ))}
         </div>
@@ -146,7 +126,6 @@ const Tasks = () => {
               task={task}
               key={task.id}
               handleTaskCheckboxClick={handleTaskCheckboxClick}
-              onDeleteSuccess={onDeleteSuccess}
             />
           ))}
         </div>
@@ -163,7 +142,6 @@ const Tasks = () => {
               task={task}
               key={task.id}
               handleTaskCheckboxClick={handleTaskCheckboxClick}
-              onDeleteSuccess={onDeleteSuccess}
             />
           ))}
         </div>
