@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import {
@@ -12,64 +11,92 @@ import Input from "../components/Input";
 import TimeSelect from "../components/TimeSelect";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const TaskDetailsPage = () => {
-  const [task, setTask] = useState();
   const { taskId } = useParams();
   const navigate = useNavigate();
   const {
     register,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     handleSubmit,
     reset,
   } = useForm();
+  const { mutate: deleteTask, isPending: deleteTaskIsLoading } = useMutation({
+    mutationKey: ["deleteTask", taskId],
+    mutationFn: async () => {
+      const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error();
+      }
+      const deletedTask = response.json();
+      queryClient.setQueryData(["tasks"], (oldTasks) => {
+        return oldTasks.filter((oldTask) => oldTask.id !== deletedTask.id);
+      });
+    },
+  });
+  const { mutate: updateTask, isPending: updateTaskIsLoading } = useMutation({
+    mutationKey: ["updateTask ", taskId],
+    mutationFn: async (data) => {
+      const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          title: data.title.trim(),
+          time: data.time,
+          description: data.description.trim(),
+        }),
+      });
+      if (!response.ok) {
+        throw new Error();
+      }
 
-  useEffect(() => {
-    async function fetchTask() {
+      const updatedTask = response.json();
+      queryClient.setQueryData(["tasks"], (oldTasks) => {
+        return oldTasks.map((oldTask) => {
+          if (oldTask.id === taskId) {
+            return updatedTask;
+          }
+          return oldTask;
+        });
+      });
+    },
+  });
+  const { data: task } = useQuery({
+    queryKey: ["task", taskId],
+    queryFn: async () => {
       const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
         method: "GET",
       });
       const data = await response.json();
-      setTask(data);
       reset(data);
-    }
-
-    fetchTask();
-  }, [taskId, reset]);
-
-  const handleBackClick = () => {
-    navigate(-1);
-  };
+      return data;
+    },
+  });
+  const queryClient = useQueryClient();
 
   const handleSaveClick = async (data) => {
-    const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
-      method: "PATCH",
-      body: JSON.stringify({
-        title: data.title.trim(),
-        time: data.time,
-        description: data.description.trim(),
-      }),
+    updateTask(data, {
+      onSuccess: () => {
+        toast.success("Tarefa atualizada com sucesso!");
+      },
+      onError: () => {
+        toast.error("Erro ao atualizar a tarefa. Por favor, tente novamente!");
+      },
     });
-
-    if (!response.ok) {
-      toast.error("Erro ao atualizar a tarefa. Por favor, tente novamente!");
-      return;
-    }
-    const newTask = await response.json();
-    setTask(newTask);
-    toast.success("Tarefa atualizada com sucesso!");
   };
 
   const handleDeleteClick = async () => {
-    const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
-      method: "DELETE",
+    deleteTask(undefined, {
+      onSuccess: () => {
+        toast.success("Tarefa deletada com sucesso!");
+        navigate(-1);
+      },
+      onError: () => {
+        toast.error("Ocorreu um erro ao deletar a tarefa!");
+      },
     });
-
-    if (!response.ok) {
-      return toast.error("Ocorreu um erro ao deletar a tarefa!");
-    }
-    toast.success("Tarefa deletada com sucesso!");
-    navigate(-1);
   };
 
   return (
@@ -80,7 +107,7 @@ const TaskDetailsPage = () => {
         <div className="flex w-full justify-between">
           <div className="space-y-2">
             <button
-              onClick={handleBackClick}
+              onClick={() => navigate(-1)}
               className="mb-2 flex size-8 items-center justify-center rounded-full bg-brand-primary"
             >
               <ArrowLeftIcon />
@@ -100,7 +127,7 @@ const TaskDetailsPage = () => {
           <Button
             variant="danger"
             className="h-fit self-end"
-            disabled={isSubmitting}
+            disabled={updateTaskIsLoading || deleteTaskIsLoading}
             onClick={handleDeleteClick}
           >
             Deletar tarefa
@@ -116,7 +143,7 @@ const TaskDetailsPage = () => {
             <Input
               label="Título"
               id="title"
-              disabled={isSubmitting}
+              disabled={updateTaskIsLoading || deleteTaskIsLoading}
               {...register("title", {
                 required: "O título é obrigatório!",
                 validate: (value) => {
@@ -131,7 +158,7 @@ const TaskDetailsPage = () => {
           </div>
           <div>
             <TimeSelect
-              disabled={isSubmitting}
+              disabled={updateTaskIsLoading || deleteTaskIsLoading}
               {...register("time", {
                 required: "O horário é obrigatório!",
                 validate: (value) => {
@@ -148,7 +175,7 @@ const TaskDetailsPage = () => {
             <Input
               label="Descrição"
               id="description"
-              disabled={isSubmitting}
+              disabled={updateTaskIsLoading || deleteTaskIsLoading}
               {...register("description", {
                 required: "A descrição é obrigatória!",
                 validate: (value) => {
@@ -167,11 +194,11 @@ const TaskDetailsPage = () => {
               variant="primary"
               size="lg"
               className="w-fit"
-              disabled={isSubmitting}
+              disabled={updateTaskIsLoading || deleteTaskIsLoading}
               type="submit"
             >
               Salvar
-              {isSubmitting && <LoaderIcon className="animate-spin" />}
+              {updateTaskIsLoading && <LoaderIcon className="animate-spin" />}
             </Button>
           </div>
         </form>

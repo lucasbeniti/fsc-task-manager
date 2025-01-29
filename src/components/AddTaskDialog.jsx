@@ -22,6 +22,9 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
         method: "POST",
         body: JSON.stringify(task),
       });
+      if (!response.ok) {
+        throw new Error();
+      }
       return response.json();
     },
   });
