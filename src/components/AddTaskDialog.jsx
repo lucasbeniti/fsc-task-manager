@@ -9,25 +9,12 @@ import { v4 } from "uuid";
 import PropTypes from "prop-types";
 import { LoaderIcon } from "../assets/icons";
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useAddTask } from "../hooks/data/use-add-task";
 
 const AddTaskDialog = ({ isOpen, handleClose }) => {
   const nodeRef = useRef();
-  const queryClient = useQueryClient();
-  const { mutate } = useMutation({
-    mutationKey: ["add-task"],
-    mutationFn: async (task) => {
-      const response = await fetch("http://localhost:3000/tasks", {
-        method: "POST",
-        body: JSON.stringify(task),
-      });
-      if (!response.ok) {
-        throw new Error();
-      }
-      return response.json();
-    },
-  });
+  const { mutate: addTask } = useAddTask();
   const {
     register,
     handleSubmit,
@@ -50,11 +37,8 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
       status: "notStarted",
     };
 
-    mutate(task, {
+    addTask(task, {
       onSuccess: () => {
-        queryClient.setQueryData(["tasks"], (currentTasks) => {
-          return [...currentTasks, task];
-        });
         handleClose();
         toast.success("Tarefa adicionada com sucesso!");
         reset();
