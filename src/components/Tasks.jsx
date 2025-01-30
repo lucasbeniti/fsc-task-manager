@@ -1,21 +1,13 @@
-import Button from "./Button";
-import {
-  TrashIcon,
-  AddIcon,
-  SunIcon,
-  CloudSunIcon,
-  MoonIcon,
-} from "../assets/icons";
+import { SunIcon, CloudSunIcon, MoonIcon } from "../assets/icons";
 import TasksSeparator from "./TasksSeparator";
-import { useState } from "react";
 import TaskItem from "./TaskItem";
 import { toast } from "sonner";
-import AddTaskDialog from "./AddTaskDialog";
 import { useQueryClient } from "@tanstack/react-query";
 import { useGetTasks } from "../hooks/data/use-get-tasks";
+import Header from "./Header";
+import { taskQueryKeys } from "../keys/query";
 
 const Tasks = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const queryClient = useQueryClient();
   const { data: tasks } = useGetTasks();
 
@@ -40,7 +32,8 @@ const Tasks = () => {
 
       return task;
     });
-    queryClient.setQueryData(["tasks"], newTasks);
+
+    queryClient.setQueryData(taskQueryKeys.getAll(), newTasks);
   };
 
   const handleDeleteAllTasksClick = async () => {
@@ -56,38 +49,13 @@ const Tasks = () => {
     toast.success("Todas as tarefas foram deletadas com sucesso!");
   };
 
-  const handleAddTaskClick = () => {
-    setIsDialogOpen(true);
-  };
-
-  const handleClose = () => {
-    setIsDialogOpen(false);
-  };
-
   return (
     <div className="w-full space-y-6 px-8 py-16">
-      <div className="flex w-full justify-between">
-        <div>
-          <span className="text-xs font-semibold text-brand-primary">
-            Minhas tarefas
-          </span>
-          <h2 className="text-xl font-semibold">Minhas tarefas</h2>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Button variant={"ghost"} onClick={handleDeleteAllTasksClick}>
-            Limpar tarefas
-            <TrashIcon />
-          </Button>
-          <Button variant={"primary"} onClick={handleAddTaskClick}>
-            Nova tarefa
-            <AddIcon />
-          </Button>
-
-          <AddTaskDialog isOpen={isDialogOpen} handleClose={handleClose} />
-        </div>
-      </div>
-
+      <Header
+        title={"Minhas tarefas"}
+        subtitle={"Minhas tarefas"}
+        handleDeleteAllTasksClick={handleDeleteAllTasksClick}
+      />
       <div className="rounded-xl bg-white p-6">
         <div className="space-y-3">
           <TasksSeparator text="Manhã" icon={<SunIcon />} />
