@@ -4,9 +4,11 @@ import Button from "./Button";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { useDeleteTask } from "../hooks/data/use-delete-task";
+import { useUpdateTask } from "../hooks/data/use-update-task";
 
-const TaskItem = ({ task, handleTaskCheckboxClick }) => {
+const TaskItem = ({ task }) => {
   const { mutate: deleteTask, isPending } = useDeleteTask(task.id);
+  const { mutate: updateTask } = useUpdateTask(task.id);
 
   const handleDeleteClick = async () => {
     deleteTask(undefined, {
@@ -31,6 +33,35 @@ const TaskItem = ({ task, handleTaskCheckboxClick }) => {
     }
   };
 
+  const getNewStatus = () => {
+    if (task.status === "notStarted") {
+      return "inProgress";
+    }
+    if (task.status === "done") {
+      return "notStarted";
+    }
+    if (task.status === "inProgress") {
+      return "done";
+    }
+    return "notStarted";
+  };
+
+  const handleTaskCheckboxClick = () => {
+    updateTask(
+      {
+        status: getNewStatus(),
+      },
+      {
+        onSuccess: () => {
+          toast.success("Status da tarefa atualizado com sucesso!");
+        },
+        onError: () => {
+          toast.error("Não foi possível atualizar o status da tarefa!");
+        },
+      }
+    );
+  };
+
   return (
     <div
       className={`flex items-center rounded-lg px-4 py-3 text-sm ${getStatusClasses()} select-none justify-between bg-opacity-10 transition`}
@@ -43,7 +74,7 @@ const TaskItem = ({ task, handleTaskCheckboxClick }) => {
             type="checkbox"
             className="absolute h-full w-full cursor-pointer opacity-0"
             checked={task.status === "done"}
-            onChange={() => handleTaskCheckboxClick(task.id)}
+            onChange={handleTaskCheckboxClick}
           />
           {task.status === "done" && <CheckIcon />}
           {task.status === "inProgress" && (
@@ -83,7 +114,6 @@ TaskItem.propTypes = {
     title: PropTypes.string.isRequired,
     status: PropTypes.oneOf(["done", "inProgress", "notStarted"]).isRequired,
   }).isRequired,
-  handleTaskCheckboxClick: PropTypes.func.isRequired,
 };
 
 export default TaskItem;

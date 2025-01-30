@@ -3,9 +3,9 @@
     {
       "id": "a8f0c52a-cf03-4f7e-8308-5e0d053602b5",
       "title": "Teste axios222233",
-      "time": "morning",
+      "time": "afternoon",
       "description": "123",
-      "status": "notStarted"
+      "status": "inProgress"
     },
     {
       "id": "fbbf9a0f-eed8-4895-afdd-dfdaade63da0",
@@ -19,7 +19,7 @@
       "title": "Teste",
       "time": "morning",
       "description": "123",
-      "status": "notStarted"
+      "status": "done"
     }
   ]
 }

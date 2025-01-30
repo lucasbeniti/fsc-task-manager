@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useGetTasks } from "../hooks/data/use-get-tasks";
 import Header from "./Header";
-import { taskQueryKeys } from "../keys/query";
 
 const Tasks = () => {
   const queryClient = useQueryClient();
@@ -14,27 +13,6 @@ const Tasks = () => {
   const morningTasks = tasks?.filter((task) => task.time == "morning");
   const afternoonTasks = tasks?.filter((task) => task.time === "afternoon");
   const nightTasks = tasks?.filter((task) => task.time === "night");
-
-  const handleTaskCheckboxClick = (taskId) => {
-    const newTasks = tasks.map((task) => {
-      if (task.id !== taskId) {
-        return task;
-      }
-      if (task.status === "notStarted") {
-        return { ...task, status: "inProgress" };
-      }
-      if (task.status === "done") {
-        return { ...task, status: "notStarted" };
-      }
-      if (task.status === "inProgress") {
-        return { ...task, status: "done" };
-      }
-
-      return task;
-    });
-
-    queryClient.setQueryData(taskQueryKeys.getAll(), newTasks);
-  };
 
   const handleDeleteAllTasksClick = async () => {
     const response = await fetch("http://localhost:3000/tasks", {
@@ -65,11 +43,7 @@ const Tasks = () => {
             </p>
           )}
           {morningTasks?.map((task) => (
-            <TaskItem
-              task={task}
-              key={task.id}
-              handleTaskCheckboxClick={handleTaskCheckboxClick}
-            />
+            <TaskItem task={task} key={task.id} />
           ))}
         </div>
 
@@ -81,11 +55,7 @@ const Tasks = () => {
             </p>
           )}
           {afternoonTasks?.map((task) => (
-            <TaskItem
-              task={task}
-              key={task.id}
-              handleTaskCheckboxClick={handleTaskCheckboxClick}
-            />
+            <TaskItem task={task} key={task.id} />
           ))}
         </div>
 
@@ -97,11 +67,7 @@ const Tasks = () => {
             </p>
           )}
           {nightTasks?.map((task) => (
-            <TaskItem
-              task={task}
-              key={task.id}
-              handleTaskCheckboxClick={handleTaskCheckboxClick}
-            />
+            <TaskItem task={task} key={task.id} />
           ))}
         </div>
       </div>
