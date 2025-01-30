@@ -12,7 +12,7 @@ import TaskItem from "./TaskItem";
 import { toast } from "sonner";
 import AddTaskDialog from "./AddTaskDialog";
 import { useQueryClient } from "@tanstack/react-query";
-import { useGetTasks } from "../hooks/data/use-get-task";
+import { useGetTasks } from "../hooks/data/use-get-tasks";
 
 const Tasks = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);

@@ -1,15 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetTasks = () => {
+export const useGetTask = ({ taskId, onSuccess }) => {
   return useQuery({
-    queryKey: ["tasks"],
+    queryKey: ["task", taskId],
     queryFn: async () => {
-      const response = await fetch("http://localhost:3000/tasks", {
+      const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
         method: "GET",
       });
-      const tasks = await response.json();
-
-      return tasks;
+      const task = await response.json();
+      onSuccess(task);
+      return task;
     },
   });
 };

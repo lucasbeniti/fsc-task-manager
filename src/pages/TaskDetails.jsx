@@ -11,9 +11,9 @@ import Input from "../components/Input";
 import TimeSelect from "../components/TimeSelect";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
-import { useQuery } from "@tanstack/react-query";
 import { useUpdateTask } from "../hooks/data/use-update-task";
 import { useDeleteTask } from "../hooks/data/use-delete-task";
+import { useGetTask } from "../hooks/data/use-get-task";
 
 const TaskDetailsPage = () => {
   const { taskId } = useParams();
@@ -28,16 +28,9 @@ const TaskDetailsPage = () => {
     useDeleteTask(taskId);
   const { mutate: updateTask, isPending: updateTaskIsLoading } =
     useUpdateTask(taskId);
-  const { data: task } = useQuery({
-    queryKey: ["task", taskId],
-    queryFn: async () => {
-      const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
-        method: "GET",
-      });
-      const data = await response.json();
-      reset(data);
-      return data;
-    },
+  const { data: task } = useGetTask({
+    taskId: taskId,
+    onSuccess: () => reset(task),
   });
 
   const handleSaveClick = async (data) => {
