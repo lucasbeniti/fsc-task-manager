@@ -30,7 +30,7 @@ const TaskDetailsPage = () => {
     useUpdateTask(taskId);
   const { data: task } = useGetTask({
     taskId: taskId,
-    onSuccess: () => reset(task),
+    onSuccess: reset,
   });
 
   const handleSaveClick = async (data) => {
